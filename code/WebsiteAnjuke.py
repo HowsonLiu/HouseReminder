@@ -6,6 +6,9 @@ REFRESH_TIME = 5
 
 # 顺德 最新
 SHUNDE_URL = 'https://foshan.anjuke.com/sale/shundequ/o5/'
+# 美的海岸花园 最新
+MEIDI_URL = 'https://foshan.anjuke.com/sale/o5/?kw=%E7%BE%8E%E7%9A%84%E6%B5%B7%E5%B2%B8%E8%8A%B1%E5%9B%AD&k_' \
+            'comm_id=261039&kw_type=3'
 
 HEADER = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
@@ -47,7 +50,7 @@ class HomeSpider:
         if len(house_list) == 0:
             return
         href = house_list[0].get("href")
-        print(href)
+        return href
 
 class DetailSpider:
     """安居客详情页爬虫
