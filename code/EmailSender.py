@@ -8,14 +8,14 @@ class EmailSender:
     server = None
     sender = None
     password = None     # vjqmcgyoulifciej
-    receivers = '948470636@qq.com'    # 自己设置接受者，使用逗号隔开
+    receivers = ['948470636@qq.com', '1819976230@qq.com']
     msg_text = r"""<html><head><style>.detail{margin:0 30px 0 0;}</style>
 </head><body><h1>%s</h1><div><span class="detail" style="font-size:30px">总价格:</span>
 <span style="font-size:30px">%s</span></div><div><span class="detail" style="font-size:30px">建筑面积:</span>
 <span style="font-size:30px">%s</span></div><div><span class="detail" style="font-size:30px">单价:</span>
 <span style="font-size:30px">%s</span></div><div><span class="detail" style="font-size:30px">位置:</span>
 <span style="font-size:30px">%s</span></div><div><span class="detail" style="font-size:30px">户型:</span>
-<span style="font-size:30px">%s</span></div><div><a href="{%s}" style="font-size:30px">链接</a></div></body>
+<span style="font-size:30px">%s</span></div><div><a href="%s" style="font-size:30px">链接</a></div></body>
 </html>"""
 
     def login(self):
@@ -34,6 +34,7 @@ class EmailSender:
                                      houseinfo.url)
         msg = MIMEText(send_text, 'html', 'utf-8')
         msg['From'] = formataddr(["Howson_Friday", self.sender])
-        msg['To'] = formataddr(["You", self.receivers])
-        self.server.sendmail(self.sender, [self.receivers], msg.as_string())
+        msg['To'] = ", ".join(self.receivers)
+        msg['Subject'] = houseinfo.community + " " + houseinfo.area + " " + houseinfo.price
+        self.server.sendmail(self.sender, self.receivers, msg.as_string())
 
