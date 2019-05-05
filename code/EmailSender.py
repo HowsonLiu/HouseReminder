@@ -19,10 +19,10 @@ class EmailSender:
 <span style="font-size:30px">%s</span></div><div><a href="%s" style="font-size:30px">链接</a></div></body>
 </html>"""
 
-    def login(self):
+    def login(self, account, password):
         self.server = smtplib.SMTP_SSL('smtp.qq.com', 465)
-        self.sender = input("Please enter the sender's qq email account: ")
-        self.password = input("Please enter your PIN: ")
+        self.sender = account
+        self.password = password
         self.server.login(self.sender, self.password)
 
     def send_house_info(self, houseinfo):
