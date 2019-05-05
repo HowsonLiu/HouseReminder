@@ -1,3 +1,4 @@
+# -*- coding:utf8 -*-
 from EmailSender import EmailSender
 from WebsiteAnjuke import *
 import schedule
