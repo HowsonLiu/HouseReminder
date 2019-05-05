@@ -24,6 +24,7 @@ class EmailSender:
         self.sender = account
         self.password = password
         self.server.login(self.sender, self.password)
+        print("login success")
 
     def send_house_info(self, houseinfo):
         send_text = self.msg_text % (houseinfo.community,
