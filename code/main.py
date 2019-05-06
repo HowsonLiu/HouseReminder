@@ -14,6 +14,7 @@ OLD_URL = None
 def check_and_send():
     global home_spider, OLD_URL, ACCOUNT, PASSWORD
     lastest_url = home_spider.get_first_url()
+    print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
     print(lastest_url)
     if OLD_URL is not None and lastest_url is not None and lastest_url[:-20] == OLD_URL[:-20]:      # 除去url中的时间干扰
         return False
