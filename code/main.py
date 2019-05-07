@@ -20,6 +20,9 @@ def check_and_send():
         return False
     detail_spider = DetailSpider(lastest_url)
     houseinfo = detail_spider.get_houseinfo()
+    if houseinfo is None:
+        print('Get Detail Error')
+        return False
     sender = EmailSender()
     sender.login(ACCOUNT, PASSWORD)
     sender.send_house_info(houseinfo)
