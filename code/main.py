@@ -24,9 +24,13 @@ def check_and_send():
         print('Get Detail Error')
         return False
     sender = EmailSender()
-    sender.login(ACCOUNT, PASSWORD)
-    sender.send_house_info(houseinfo)
-    OLD_URL = lastest_url
+    try:
+        sender.login(ACCOUNT, PASSWORD)
+        sender.send_house_info(houseinfo)
+        OLD_URL = lastest_url
+    except:
+        print('SMTP connected error')
+        return False
     return True
 
 def load_configure():
