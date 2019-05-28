@@ -9,7 +9,7 @@ class EmailSender:
     server = None
     sender = None
     password = None     # vjqmcgyoulifciej
-    receivers = ['948470636@qq.com', '1819976230@qq.com']
+    receivers = ['948470636@qq.com', '1819976230@qq.com', '2848727944@qq.com']
     msg_text = r"""<html><head><style>.detail{margin:0 30px 0 0;}</style>
 </head><body><h1>%s</h1><div><span class="detail" style="font-size:30px">总价格:</span>
 <span style="font-size:30px">%s</span></div><div><span class="detail" style="font-size:30px">建筑面积:</span>
