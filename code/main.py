@@ -28,8 +28,8 @@ def check_and_send():
         sender.login(ACCOUNT, PASSWORD)
         sender.send_house_info(houseinfo)
         OLD_URL = lastest_url
-    except:
-        print('SMTP connected error')
+    except Exception as e:
+        print('SMTP connected error: ' + repr(e))
         return False
     return True
 
