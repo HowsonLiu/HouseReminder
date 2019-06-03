@@ -10,8 +10,9 @@ HEADER = {
                   'Chrome/71.0.3578.98 Safari/537.36'
 }
 
+
 class ZiroomSpider:
-    """爬虫
+    """自如爬虫
     """
 
     url = None
@@ -34,26 +35,36 @@ class ZiroomSpider:
         soup = BeautifulSoup(html.text, 'lxml')
         number_text = soup.select('body > div.t_myarea.t_mainbox.clearfix.mt15.t_zindex0 > div > '
                                   'div.t_shuaichoose_order > div > span')[0].get_text()
-        number = int(number_text[2:])
+        number = int(number_text[2:])   # 1/10去除1/
         return number
 
-    def get_house_list(self, num):
+    def get_house_list(self, index):
         house_list = []
-        if self.url is None or num < 1:
-            return house_list
-        url = self.url + '?p=' + str(num)
+        if self.url is None or index < 1:
+            return house_list, False
+        url = self.url + '?p=' + str(index)
         try:
             html = requests.get(url, headers=HEADER)
             if html.status_code != 200:
-                print('Get' + str(num) + ' page response ' + str(html.status_code))
-                return house_list
+                print('Get' + str(index) + ' page response ' + str(html.status_code))
+                return house_list, False
         except Exception as e:
-            print('Get' + str(num) + ' page error:' + repr(e))
-            return house_list
+            print('Get' + str(index) + ' page error:' + repr(e))
+            return house_list, False
         soup = BeautifulSoup(html.text, 'lxml')
         house_list_soup = soup.select('#houseList > li')  # 找出houseList下所有的li
         for house in house_list_soup:
             href = house.select('div.priceDetail > p.more > a')[0]['href']  # 要加[0]，否则是NavigableString对象
             house_list.append(href[2:])  # 去除前面的//
-        return house_list
+        return house_list, True
+
+    def get_all_house_list(self):
+        page_num = self.get_page_num()
+        all_house_list = []
+        for index in range(1, page_num+1):
+            house_list, res = self.get_house_list(index)
+            if res is False:
+                return [], False
+            all_house_list.extend(house_list)
+        return all_house_list, True
 
