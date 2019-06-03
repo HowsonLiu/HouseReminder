@@ -1,20 +1,18 @@
 # -*- coding:utf8 -*-
-from EmailSender import EmailSender
+from EmailSender import *
 from WebsiteAnjuke import *
 import schedule
-import configparser
 import time
 
 REFERSH_INTERVAL = 60
-CONFIG_FILE_PATH = "./setup.cfg"
-ACCOUNT = None
-PASSWORD = None
+HOME_SPIDER = None
 OLD_URL = None
 
+
 def check_and_send():
-    global home_spider, OLD_URL, ACCOUNT, PASSWORD
-    lastest_url = home_spider.get_first_url()
-    print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
+    global HOME_SPIDER, OLD_URL
+    lastest_url = HOME_SPIDER.get_first_url()
+    print(time.strftime("%Y-%m-%d %H:%M:%S is running", time.localtime()))
     if OLD_URL is not None and lastest_url is not None and lastest_url[:-20] == OLD_URL[:-20]:      # 除去url中的时间干扰
         return False
     detail_spider = DetailSpider(lastest_url)
@@ -24,8 +22,8 @@ def check_and_send():
         return False
     sender = EmailSender()
     try:
-        sender.login(ACCOUNT, PASSWORD)
-        sender.send_house_info(houseinfo)
+        sender.default_login()
+        sender.anjuke_send_house_info(houseinfo)
         OLD_URL = lastest_url
         print(lastest_url)
     except Exception as e:
@@ -33,15 +31,9 @@ def check_and_send():
         return False
     return True
 
-def load_configure():
-    global ACCOUNT, PASSWORD
-    conf = configparser.ConfigParser()
-    conf.read(CONFIG_FILE_PATH, encoding='utf-8')
-    ACCOUNT = conf.get("sender", "account")
-    PASSWORD = conf.get("sender", "password")
-
-load_configure()
-home_spider = HomeSpider(MEIDI_URL)
+load_email_configure()
+HOME_SPIDER = HomeSpider(MEIDI_URL)
+check_and_send()
 schedule.every(REFERSH_INTERVAL).seconds.do(check_and_send)
 while True:
     schedule.run_pending()
