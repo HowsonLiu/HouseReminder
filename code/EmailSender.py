@@ -6,7 +6,7 @@ import configparser
 
 ACCOUNT = None
 PASSWORD = None
-CONFIG_FILE_PATH = "./setup.cfg"
+CONFIG_FILE_PATH = "./code/setup.cfg"
 
 
 def load_email_configure():
