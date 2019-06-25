@@ -4,30 +4,37 @@ from WebsiteAnjuke import *
 import schedule
 import time
 
+PRINT_INTERVAL = 5
 REFERSH_INTERVAL = 60
 HOME_SPIDER = None
 OLD_URL = None
 
 
 def check_and_send():
-    global HOME_SPIDER, OLD_URL
+    global HOME_SPIDER, OLD_URL, PRINT_INTERVAL
+    PRINT_INTERVAL -= 1
+    if PRINT_INTERVAL == 0:
+        print(time.strftime("Note: %Y-%m-%d %H:%M:%S is running", time.localtime()))
+        PRINT_INTERVAL = 5
     lastest_url = HOME_SPIDER.get_first_url()
-    print(time.strftime("%Y-%m-%d %H:%M:%S is running", time.localtime()))
-    if OLD_URL is not None and lastest_url is not None and lastest_url[:-20] == OLD_URL[:-20]:      # 除去url中的时间干扰
+    if lastest_url is None:
+        return False
+    # 安居客更新了一个uniqid字段，也需要筛除去
+    if OLD_URL is not None and lastest_url is not None and lastest_url[:50] == OLD_URL[:50]:
         return False
     detail_spider = DetailSpider(lastest_url)
     houseinfo = detail_spider.get_houseinfo()
     if houseinfo is None:
-        print('Get Detail Error')
         return False
     sender = EmailSender()
     try:
         sender.default_login()
         sender.anjuke_send_house_info(houseinfo)
         OLD_URL = lastest_url
-        print(lastest_url)
+        print('Note: Newest url is: ' + lastest_url[:47])
     except Exception as e:
-        print('SMTP connected error: ' + repr(e))
+        print('Error: SMTP connected error')
+        print(repr(e))
         return False
     return True
 

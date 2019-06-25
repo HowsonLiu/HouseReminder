@@ -2,9 +2,6 @@
 import requests
 from bs4 import BeautifulSoup
 
-# 刷新时间
-REFRESH_TIME = 5
-
 # 顺德 最新
 SHUNDE_URL = 'https://foshan.anjuke.com/sale/shundequ/o5/'
 # 美的海岸花园 最新
@@ -15,6 +12,7 @@ HEADER = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
                   'Chrome/71.0.3578.98 Safari/537.36'
 }
+
 
 class HouseInfo:
     """安居客网站房屋信息结构
@@ -27,10 +25,10 @@ class HouseInfo:
     community = None    # 小区
     position = None     # 位置
 
+
 class HomeSpider:
     """安居客首页爬虫
     """
-
     url = None
 
     def __init__(self, url):
@@ -39,19 +37,25 @@ class HomeSpider:
     def get_first_url(self):
         """获取下面列表第一个房子的url"""
         if self.url is None:
+            print('Warning: url is None')
             return None
         try:
             html = requests.get(self.url, headers=HEADER)
             if html.status_code != 200:
+                print('Warning: Status code is ' + str(html.status_code))
                 return None
-        except:
+        except Exception as e:
+            print('Error: Can not get first url')
+            print(repr(e))
             return None
         soup = BeautifulSoup(html.text, 'lxml')
         house_list = soup.select('#houselist-mod-new > li:nth-child(1) > div.house-details > div.house-title > a')
         if len(house_list) == 0:
-            return
+            print('Warning: bs4 error')
+            return None
         href = house_list[0].get("href")
         return href
+
 
 class DetailSpider:
     """安居客详情页爬虫
@@ -63,12 +67,16 @@ class DetailSpider:
 
     def get_houseinfo(self):
         if self.url is None:
-            return
+            print('Warning: url is None')
+            return None
         try:
             html = requests.get(self.url, headers=HEADER)
             if html.status_code != 200:
-                return
-        except:
+                print('Warning: Status code is ' + str(html.status_code))
+                return None
+        except Exception as e:
+            print('Error: Can not get detail page')
+            print(repr(e))
             return
         soup = BeautifulSoup(html.text, 'lxml')
         info = HouseInfo()
@@ -79,7 +87,7 @@ class DetailSpider:
             info.price = soup.select('#content > div.wrapper > div.wrapper-lf > div.clearfix > '
                                      'div.basic-info.clearfix > span.light.info-tag > em')[0].string
             info.price = info.price + "万"
-        except:
+        except Exception:
             info.price = "?万"
         # perprice
         try:
